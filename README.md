@@ -14,6 +14,7 @@ The project consists of three main components:
 
 
 - **`transformer_explanation.html`**: A detailed educational webpage explaining Transformers from the ground up. It covers tokenization, embeddings, positional encoding, multi-head self-attention, feed-forward networks, the prediction process, and training dynamics. Includes code snippets, diagrams, and a concrete example of predicting "mat" after "The cat sat on the".
+- https://srinipusuluri.github.io/transformer_basics/
 
 - **`token_probabilities.png`**: A sample output visualization showing top token probabilities plotted as a bar chart.
 
