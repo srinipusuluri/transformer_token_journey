@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transforming Tokens: A Journey Through Transformer Models</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px auto;
+            max-width: none;
+            background-color: #ffffff;
+            color: #333333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #3498db;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #e74c3c;
+        }
+        h4 {
+            color: #27ae60;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        ul, ol {
+            margin-bottom: 15px;
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f8ff;
+        }
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        .emoji {
+            font-size: 1.2em;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 10px;
+            border-left: 5px solid #ffc107;
+            margin-bottom: 15px;
+        }
+        .summary {
+            background-color: #d1ecf1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .transformer-diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #e8f4fd;
+            border-radius: 10px;
+            border: 2px solid #3498db;
+            font-family: monospace;
+            flex-wrap: wrap;
+        }
+        .transformer-diagram .step {
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            margin: 5px;
+            min-width: 100px;
+        }
+        .transformer-diagram .input {
+            background-color: #27ae60;
+            color: white;
+        }
+        .transformer-diagram .transformer-block {
+            background-color: #3498db;
+            color: white;
+        }
+        .transformer-diagram .output {
+            background-color: #f39c12;
+            color: white;
+        }
+        .transformer-diagram .arrow {
+            font-size: 24px;
+            color: #7f8c8d;
+            margin: 0 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 Example sentence</h1>
+
+<div class="transformer-diagram">
+    <div class="step input">Input Tokens</div>
+    <div class="arrow">→</div>
+    <div class="step transformer-block">Transformer Block 1<br/>+LayerNorm</div>
+    <div class="arrow">→</div>
+    <div class="step transformer-block">Transformer Block 2<br/>+Attention</div>
+    <div class="arrow">→</div>
+    <div class="step transformer-block">...</div>
+    <div class="arrow">→</div>
+    <div class="step transformer-block">Transformer Block N</div>
+    <div class="arrow">→</div>
+    <div class="step output">Output Token Prediction</div>
+</div>
+
+        <p>"The cat sat on the mat."</p>
+        <p>Let's say we feed this into a Transformer model (like BERT or GPT).</p>
+
+        <h2>🧩 Step 1 — Input Embedding</h2>
+        <p>Each token (word or subword) is converted into a vector. Token Example embedding (dimension = 4 for simplicity)</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>Example embedding (dimension = 4 for simplicity)</th>
+            </tr>
+            <tr>
+                <td>The</td>
+                <td>[0.2, 0.5, 0.1, 0.4]</td>
+            </tr>
+            <tr>
+                <td>cat</td>
+                <td>[0.9, 0.8, 0.3, 0.7]</td>
+            </tr>
+            <tr>
+                <td>sat</td>
+                <td>[0.6, 0.3, 0.9, 0.5]</td>
+            </tr>
+            <tr>
+                <td>on</td>
+                <td>[0.1, 0.2, 0.2, 0.3]</td>
+            </tr>
+            <tr>
+                <td>the</td>
+                <td>[0.3, 0.4, 0.1, 0.6]</td>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>[0.7, 0.9, 0.5, 0.8]</td>
+            </tr>
+        </table>
+        <p>Each vector = one point in hidden space (size could be 512, 768, 1024, etc. in real models).</p>
+
+        <h2>🧭 Step 2 — Positional Encoding</h2>
+        <p>Transformers have no sense of order by default (self-attention treats input as a bag of tokens). So we add positional encodings (sinusoidal or learned) to each token embedding: <code>Input to the first layer = WordEmbedding + PositionEmbedding</code></p>
+        <p>Now, "The" knows it's token #1, "cat" is #2, etc.</p>
+
+        <h2>🏗️ Step 3 — One Transformer Block</h2>
+        <p>Each Transformer block has 2 major parts: Multi-Head Self-Attention Feed-Forward Network and each part is wrapped with: a residual connection a LayerNorm</p>
+        <p>We'll break these down next 👇</p>
+
+        <h3>🔹 3.1 LayerNorm (Pre-Norm setup)</h3>
+        <p>Before entering self-attention, we normalize each token's features (as explained before). This ensures stability and consistent scale before the next operation. <code>NormedInput = LayerNorm(x)</code> Example: For "cat", the vector [0.9, 0.8, 0.3, 0.7] → becomes normalized to mean 0, std 1.</p>
+
+        <h3>🔹 3.2 Multi-Head Self-Attention (MHSA)</h3>
+        <p>Now the model learns which words should focus on which others. Each token's vector is projected into three versions: <code>Q = xW_Q, K = xW_K, V = xW_V</code> (where W_Q, W_K, W_V are learned matrices) Each token will attend to others using the attention formula: <code>Attention(Q,K,V) = softmax(QK^T / sqrt(d_k)) V</code> 👉 Example intuition: "cat" looks at "sat" (because verbs and nouns often relate) "mat" might attend to "on" "the" usually attends lightly everywhere Each attention head learns different relationships (syntax, distance, context).</p>
+
+        <h3>🔹 3.3 Combine Multiple Heads</h3>
+        <p>If there are 8 heads: <code>MultiHead(Q,K,V) = Concat(head_1, ..., head_8) W_O</code> Each head captures different linguistic or semantic relationships.</p>
+
+        <h3>🔹 3.4 Residual Connection</h3>
+        <p>After attention, we add back the original input (skip connection): <code>x_1 = x + MultiHeadAttention(x)</code> This helps gradient flow and preserves original token info.</p>
+
+        <h3>🔹 3.5 LayerNorm again (before Feed-Forward)</h3>
+        <p>We normalize again before the FFN: <code>Normed_1 = LayerNorm(x_1)</code> This ensures stable inputs to the next sublayer.</p>
+
+        <h3>🔹 3.6 Feed-Forward Network (FFN)</h3>
+        <p>This part applies two dense layers to each token separately: <code>FFN(x) = ReLU(x W_1 + b_1) W_2 + b_2</code> Think of it as non-linear mixing of features. Each token passes independently (no attention here). Example: If "cat"'s context now suggests it's the subject, the FFN refines its embedding to emphasize "noun/actor".</p>
+
+        <h3>🔹 3.7 Residual Connection again</h3>
+        <p>We add the input back: <code>x_2 = x_1 + FFN(Normed_1)</code> That completes one Transformer block.</p>
+
+        <h2>🔁 Step 4 — Stack of Blocks</h2>
+        <p>A transformer has many such blocks stacked (e.g., 12, 24, 48 layers). Each layer deepens context understanding. After multiple layers: "cat" now encodes not just the word, but its role in the sentence ("subject"). "mat" knows it's the object of "on".</p>
+
+        <h2>🧠 Step 5 — Output</h2>
+        <p>Depending on task: Encoder output → goes into a decoder (for translation). Decoder output → predicts next word (in GPT). CLS token → used for classification (in BERT).</p>
+
+<h2>💻 Code Implementation Example</h2>
+<p>Let's examine a practical implementation using Hugging Face's Transformers library. This Python script demonstrates the token prediction process we've discussed:</p>
+
+<h3>Loading Model and Tokenization</h3>
+<pre><code>from transformers import AutoTokenizer, AutoModelForCausalLM
+
+tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
+model = AutoModelForCausalLM.from_pretrained("distilgpt2")
+model.eval()
+
+input_text = "The cat sat on the"
+input_ids = tokenizer.encode(input_text, return_tensors="pt")
+print("Input tokens:", input_ids.tolist()[0])
+print("Decoded tokens:", [tokenizer.decode([token]) for token in input_ids.tolist()[0]])</code></pre>
+
+<h3>Forward Pass and Logits</h3>
+<pre><code>with torch.no_grad():
+    outputs = model(input_ids)
+    logits = outputs.logits  # Shape: [batch_size, seq_len, vocab_size]
+
+next_token_logits = logits[:, -1, :]  # Last token's logits for next prediction</code></pre>
+
+<h3>Softmax to Probabilities</h3>
+<pre><code>probabilities = torch.softmax(next_token_logits, dim=-1)</code></pre>
+
+<h3>Selecting Next Token</h3>
+<pre><code>argmax_token_id = torch.argmax(probabilities, dim=-1).item()
+predicted_token = tokenizer.decode([argmax_token_id])</code></pre>
+<p>This implements the argmax selection we discussed above.</p>
+
+<h3>Cross-Entropy Loss (for Training)</h3>
+<pre><code>loss = -torch.log(probabilities[0, target_token_id])</code></pre>
+<p>This matches our loss computation: <code>Loss = -log(P(true token))</code></p>
+
+<h2>🔄 Summary of Flow (Pre-Norm version)</h2>
+<pre>
+x
+│
+├── LayerNorm ──► Multi-Head Attention ──► Add (residual)
+│
+├── LayerNorm ──► Feed-Forward Network ──► Add (residual)
+│
+└── Output to next block
+</pre>
+
+        <h2>💡 Why Each Piece Matters</h2>
+        <table>
+            <tr>
+                <th>Component</th>
+                <th>Purpose</th>
+            </tr>
+            <tr>
+                <td>LayerNorm</td>
+                <td>Keeps activations stable, balances scales per token</td>
+            </tr>
+            <tr>
+                <td>Multi-Head Attention</td>
+                <td>Learns relationships between all tokens</td>
+            </tr>
+            <tr>
+                <td>Residual Connection</td>
+                <td>Prevents information loss and helps gradients</td>
+            </tr>
+            <tr>
+                <td>Feed-Forward Network</td>
+                <td>Adds non-linearity and feature transformation</td>
+            </tr>
+            <tr>
+                <td>Stacking Layers</td>
+                <td>Builds hierarchical understanding (syntax → meaning → context)</td>
+            </tr>
+        </table>
+
+        <h2>🧩 Intuitive Flow for "The cat sat on the mat"</h2>
+        <table>
+            <tr>
+                <th>Stage</th>
+                <th>What happens</th>
+            </tr>
+            <tr>
+                <td>Embedding</td>
+                <td>Each word → vector</td>
+            </tr>
+            <tr>
+                <td>Positional</td>
+                <td>Adds word order info</td>
+            </tr>
+            <tr>
+                <td>Self-Attention</td>
+                <td>"cat" attends to "sat", "mat" attends to "on"</td>
+            </tr>
+            <tr>
+                <td>FFN</td>
+                <td>Refines each token's meaning</td>
+            </tr>
+            <tr>
+                <td>LayerNorm</td>
+                <td>Keeps values balanced</td>
+            </tr>
+            <tr>
+                <td>Stacking</td>
+                <td>Deeper context understanding emerges</td>
+            </tr>
+            <tr>
+                <td>Output</td>
+                <td>Context-aware embeddings for each token</td>
+            </tr>
+        </table>
+
+        <h2>🧩 How Transformer Outputs Convert to Next Token Prediction</h2>
+        <p>Let's dive into how the final transformer output converts to predictions like "mat" for "The cat sat on the ___". We walk through the same example: "The cat sat on the ___" and see how the model predicts "mat".</p>
+
+        <h2>🧩 Step 1 — Transformer Output Vectors</h2>
+        <p>After the final Transformer block, each token ("The", "cat", "sat", "on", etc.) has a hidden vector — a numerical representation summarizing its meaning + context. Let's say the hidden dimension = 768 (typical for GPT-2/BERT-base). For our last token "on", we'll call its hidden vector: <code>h_on ∈ ℝ^768</code> This vector now contains context like: "something should come after 'on' — probably a noun that is an object, maybe a surface."</p>
+
+        <h2>🔢 Step 2 — Projection to Vocabulary Space</h2>
+        <p>Now we need to turn this 768-dimensional hidden vector into a probability distribution over all words in the model's vocabulary (say 50,000 tokens). We do this using a linear projection (dense layer): <code>logits = h_on W^T + b</code> where W ∈ ℝ^{|V| × 768} is the output embedding matrix (often tied to input embeddings) b ∈ ℝ^{|V|} is the bias |V| = vocabulary size (e.g., 50,000) So the result: logits ∈ ℝ^50000 Each value in logits represents how strongly the model thinks that token should be next before normalization.</p>
+        <p>Example of raw logits (simplified):</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>Logit</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>8.2</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>7.1</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>5.4</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>2.3</td>
+            </tr>
+            <tr>
+                <td><unk></td>
+                <td>-1.0</td>
+            </tr>
+        </table>
+
+        <h2>🔥 Step 3 — Softmax → Probabilities</h2>
+        <p>We convert logits into probabilities using Softmax: <code>P(token_i) = e^logit_i / sum_j e^logit_j</code> Now we get:</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>Probability</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>0.72</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>0.18</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>0.08</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>0.02</td>
+            </tr>
+        </table>
+        <p>This means: The model believes "mat" is the most likely next word with 72% probability.</p>
+
+        <h2>🎯 Step 4 — Selecting the Next Token</h2>
+        <p>During generation (inference), the model can: Greedy decode: pick the highest probability (mat) Top-k / Top-p sampling: randomly sample among top candidates for diversity So, it picks: next token = "mat" 🧠 Step 5 — Add It Back to Input Now the sequence becomes: "The cat sat on the mat" That new token embedding is added to the sequence, and the model continues predicting the next one — until it outputs an end-of-sentence token or max length.</p>
+
+        <h2>🔍 Step-by-Step Flow Summary</h2>
+        <table>
+            <tr>
+                <th>Step</th>
+                <th>Operation</th>
+                <th>Symbol</th>
+                <th>Shape</th>
+                <th>Meaning</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Hidden state for last token</td>
+                <td>h_on</td>
+                <td>(1, 768)</td>
+                <td>Context vector</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Linear layer (output projection)</td>
+                <td>W^T</td>
+                <td>(768, 50000)</td>
+                <td>Map to vocab space</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Compute logits</td>
+                <td>h_on W^T + b</td>
+                <td>(1, 50000)</td>
+                <td>Raw scores per word</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Apply softmax</td>
+                <td>P = softmax(logits)</td>
+                <td>(1, 50000)</td>
+                <td>Probabilities</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Pick next token</td>
+                <td>argmax or sample</td>
+                <td>"mat"</td>
+                <td>Model's prediction</td>
+            </tr>
+        </table>
+
+        <h2>🧩 Optional Detail — Weight Tying</h2>
+        <p>Transformers usually tie the input and output embedding matrices: W_out = W_embed That means the same matrix is used to: encode words → vectors (input), decode vectors → words (output). It helps reduce parameters and keeps input/output spaces aligned.</p>
+
+        <h2>🧠 Example Intuition Recap</h2>
+        <p>Hidden state for "on" says: "expect a surface noun." The projection layer measures similarity of this hidden vector to every vocabulary vector. "mat" vector is most similar (highest dot product), so it gets highest logit. Softmax turns logits into probabilities. The decoder picks "mat". Let's walk through a numerical mini-example step-by-step — how the Transformer predicts "mat" from "The cat sat on the ___"</p>
+        <p>We’ll shrink everything to small numbers so it’s easy to follow.</p>
+
+        <h3>🎬 Setup</h3>
+        <p>We’ll pretend: Hidden size = 4 Vocabulary = {mat, table, chair, sky, door} So vocab size |V| = 5</p>
+
+        <h2>🧩 Step 1 — Hidden vector for "on"</h2>
+        <p>After all Transformer layers, the model produces a hidden state for the token "on": h_on = [0.6,  0.8,  0.1,  0.5] This is a summary of context — it encodes that something like a surface noun should follow.</p>
+
+        <h2>🔢 Step 2 — Output embedding matrix W</h2>
+        <p>Each vocabulary word has its own learned embedding (same dimension = 4):</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>W_token (embedding vector)</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>[0.7, 0.9, 0.2, 0.6]</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>[0.5, 0.8, 0.1, 0.3]</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>[0.4, 0.6, 0.2, 0.1]</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>[0.1, 0.1, 0.9, 0.2]</td>
+            </tr>
+            <tr>
+                <td>door</td>
+                <td>[0.3, 0.7, 0.2, 0.5]</td>
+            </tr>
+        </table>
+
+        <h3>⚙️ Step 3 — Compute logits</h3>
+        <p>Each logit is the dot product between h_on and each word embedding: logit(w) = h_on · W_w Let’s compute:</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>Dot product calculation</th>
+                <th>Logit</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>0.6×0.7+0.8×0.9+0.1×0.2+0.5×0.6 0.42+0.72+0.02+0.30=1.46</td>
+                <td>1.46</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>0.6×0.5+0.8×0.8+0.1×0.1+0.5×0.3 0.30+0.64+0.01+0.15=1.10</td>
+                <td>1.10</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>0.6×0.4+0.8×0.6+0.1×0.2+0.5×0.1 0.24+0.48+0.02+0.05=0.79</td>
+                <td>0.79</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>0.6×0.1+0.8×0.1+0.1×0.9+0.5×0.2 0.06+0.08+0.09+0.10=0.33</td>
+                <td>0.33</td>
+            </tr>
+            <tr>
+                <td>door</td>
+                <td>0.6×0.3+0.8×0.7+0.1×0.2+0.5×0.5 0.18+0.56+0.02+0.25=1.01</td>
+                <td>1.01</td>
+            </tr>
+        </table>
+        <p>So logits vector: [1.46, 1.10, 0.79, 0.33, 1.01] corresponding to [mat, table, chair, sky, door].</p>
+
+        <h2>🔥 Step 4 — Softmax → Probabilities</h2>
+        <p>Softmax converts logits to probabilities: P(w_i) = e^logit_i / sum_j e^logit_j Let’s compute (approximate exponentials):</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>Logit</th>
+                <th>e^logit</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>1.46</td>
+                <td>4.30</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>1.10</td>
+                <td>3.00</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>0.79</td>
+                <td>2.20</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>0.33</td>
+                <td>1.39</td>
+            </tr>
+            <tr>
+                <td>door</td>
+                <td>1.01</td>
+                <td>2.75</td>
+            </tr>
+        </table>
+        <p>Sum of all e^logit = 4.30 + 3.00 + 2.20 + 1.39 + 2.75 = 13.64 Now divide each by total:</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>Probability</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>4.30 / 13.64 = 0.32</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>3.00 / 13.64 = 0.22</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>2.20 / 13.64 = 0.16</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>1.39 / 13.64 = 0.10</td>
+            </tr>
+            <tr>
+                <td>door</td>
+                <td>2.75 / 13.64 = 0.20</td>
+            </tr>
+        </table>
+
+        <h2>🎯 Step 5 — Pick Next Word</h2>
+        <p>Highest probability = 0.32 → "mat" ✅ So model predicts: "The cat sat on the mat"</p>
+
+        <h2>🧠 Step 6 — Feedback to model</h2>
+        <p>Now "mat" is added as the new last token. The process repeats: Transformer recomputes attention with the full sequence, Predicts the next word (or end-of-sequence). We'll continue the same "The cat sat on the ___" example and explain how the Transformer learns to choose "mat" next time if it initially guessed wrong (like "table"). This will show how logits → loss → gradients → weight updates work in Transformers.</p>
+
+        <h3>🎬 Starting Point Recap</h3>
+        <p>Model predicted "table" (wrong), correct answer is "mat". From previous step, we had:</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>Logit</th>
+                <th>Softmax Probability</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>1.46</td>
+                <td>0.32</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>1.10</td>
+                <td>0.22</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>0.79</td>
+                <td>0.16</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>0.33</td>
+                <td>0.10</td>
+            </tr>
+            <tr>
+                <td>door</td>
+                <td>1.01</td>
+                <td>0.20</td>
+            </tr>
+        </table>
+        <p>✅ True label: "mat" ❌ Predicted (argmax): "table"</p>
+
+        <h2>🧩 Step 1 — Compute Loss (Cross-Entropy)</h2>
+        <p>We use cross-entropy loss between the predicted probabilities and the true label. Loss = -log(P(true token)) So here: Loss = -log(P("mat")) = -log(0.32) = 1.14 This means the model is moderately wrong — not terrible (since 0.32 is close to 1/3).</p>
+
+        <h2>⚙️ Step 2 — Gradient of Loss w.r.t. Logits</h2>
+        <p>For softmax + cross-entropy, the gradient is simple: ∂L/∂logit_i = P_i - y_i where y_i = 1 for the correct token, 0 for others. So:</p>
+        <table>
+            <tr>
+                <th>Token</th>
+                <th>P_i</th>
+                <th>y_i</th>
+                <th>Gradient = P_i - y_i</th>
+            </tr>
+            <tr>
+                <td>mat</td>
+                <td>0.32</td>
+                <td>1</td>
+                <td>-0.68</td>
+            </tr>
+            <tr>
+                <td>table</td>
+                <td>0.22</td>
+                <td>0</td>
+                <td>+0.22</td>
+            </tr>
+            <tr>
+                <td>chair</td>
+                <td>0.16</td>
+                <td>0</td>
+                <td>+0.16</td>
+            </tr>
+            <tr>
+                <td>sky</td>
+                <td>0.10</td>
+                <td>0</td>
+                <td>+0.10</td>
+            </tr>
+            <tr>
+                <td>door</td>
+                <td>0.20</td>
+                <td>0</td>
+                <td>+0.20</td>
+            </tr>
+        </table>
+        <p>Interpretation: "mat" logit must increase (negative gradient → push up). All other logits must decrease slightly (positive gradients → push down).</p>
+
+        <h2>🧮 Step 3 — Gradient w.r.t. Output Embeddings</h2>
+        <p>Each logit was computed as: logit_i = h_on · W_i So the gradient for each W_i (word embedding for token i) is: ∂L/∂W_i = (P_i - y_i) · h_on</p>
+        <p>For example: For "mat": ∂L/∂W_mat = (-0.68) × [0.6, 0.8, 0.1, 0.5] = [-0.408, -0.544, -0.068, -0.34] This means we'll increase "mat" embedding along the same direction as h_on.</p>
+        <p>For "table": ∂L/∂W_table = (+0.22) × [0.6, 0.8, 0.1, 0.5] = [0.132, 0.176, 0.022, 0.11] This means we'll move "table" away from h_on.</p>
+
+        <h2>🔁 Step 4 — Gradient w.r.t. Hidden State</h2>
+        <p>We also compute how to adjust the hidden state h_on: ∂L/∂h_on = sum_i (P_i - y_i) W_i That gradient will flow backward into the Transformer's layers — adjusting attention weights, feed-forward layers, and embeddings that led to this hidden state.</p>
+
+        <h2>📉 Step 5 — Update Parameters (e.g., SGD or Adam)</h2>
+        <p>Now the model updates each parameter using learning rate η (say η=0.1): For "mat" embedding: W_mat,new = W_mat,old - η · ∂L/∂W_mat = [0.7,0.9,0.2,0.6] - 0.1 × [-0.408,-0.544,-0.068,-0.34] = [0.7, 0.9, 0.2, 0.6] - 0.1 × [-0.408, -0.544, -0.068, -0.34] = [0.7+0.0408,0.9+0.0544,0.2+0.0068,0.6+0.034] = [0.7408,0.9544,0.2068,0.634]</p>
+        <p>So "mat" vector becomes more aligned with h_on. Next time, their dot product (logit) will be higher.</p>
+
+        <h2>🚀 Step 6 — What Happens After Many Iterations</h2>
+        <p>Over many sentences and gradient updates: The embedding for "mat" gets tuned to appear in contexts like "on the ___". The embedding for "table", "chair", etc., get tuned for their proper contexts. The Transformer's attention weights learn the relationships ("on" → expects a surface noun). So during inference: When the hidden state around "on" forms again, "mat" will have the highest dot product → highest logit → highest probability. ✅ Correct prediction!</p>
+
+        <h2>🧠 Summary of Learning Dynamics</h2>
+        <table>
+            <tr>
+                <th>Step</th>
+                <th>What changes</th>
+                <th>Why</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Compute loss (cross-entropy)</td>
+                <td>Measures how wrong the prediction is</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Compute gradient (softmax diff)</td>
+                <td>Shows how to move logits</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Adjust output embeddings</td>
+                <td>Make correct word closer to context</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Adjust hidden states & attention</td>
+                <td>Refine internal representation</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Update with optimizer</td>
+                <td>Apply small step (learning rate)</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>Repeat</td>
+                <td>Model gradually learns real-world patterns</td>
+            </tr>
+        </table>
+
+        <h2>🔍 Conceptual Takeaway</h2>
+        <p>Forward pass: hidden state → logits → softmax → word prediction Backward pass: error signal → gradient → weight updates Goal: make hidden state h point closer to the correct word embedding So next time the model sees "The cat sat on the __", it naturally aligns the hidden state to give the highest logit for "mat" 🎯</p>
+    </div>
+</body>
+</html>
