@@ -8,6 +8,11 @@ The project consists of three main components:
 
 - **`transformer_io_example.py`**: A Gradio-based web app that allows users to input text (from predefined prompts or custom sentences) and see next-token predictions. It visualizes probabilities for the top-k tokens, displays embedding and hidden state information, and shows the completed text with the predicted token. Supported models include various GPT variants (e.g., GPT-2, GPT-Neo, GPT-J).
 
+- When you run this code here is what you see
+
+- <img width="1039" height="703" alt="image" src="https://github.com/user-attachments/assets/6bd0ef48-b6f2-47f3-b0cd-3d860b733a99" />
+
+
 - **`transformer_explanation.html`**: A detailed educational webpage explaining Transformers from the ground up. It covers tokenization, embeddings, positional encoding, multi-head self-attention, feed-forward networks, the prediction process, and training dynamics. Includes code snippets, diagrams, and a concrete example of predicting "mat" after "The cat sat on the".
 
 - **`token_probabilities.png`**: A sample output visualization showing top token probabilities plotted as a bar chart.
