@@ -72,6 +72,9 @@ Some models (e.g., larger variants) may require a Hugging Face access token for 
 
 This project is titled "Vizualizing Transformers: A Token Journey" because it maps out the complete path of a token—from initial embedding to final prediction—using both analytical explanations (HTML) and visual tools (app). It aims to make the abstract "journey" through Transformer layers tangible, answering questions like: How does "The cat sat on the" know to predict "mat"? Users can bridge theory and practice, experimenting with models to see predictions evolve.
 
+## Thanks to Vizuara
+
+https://www.youtube.com/watch?v=IWPmmwvuu9w&t=2370s
 ## Contributing
 
 Feel free to extend the app with more models, additional visualizations, or interactive elements in the HTML page. Pull requests welcome!
